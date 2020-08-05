@@ -4,26 +4,59 @@ import { connect } from "react-redux";
 import * as actionCreator from './store/actions';
 
 class App extends Component {
-  async componentDidMount() {
-    this.props.onDataFetched()
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPage: 1
+    }
+  }
+
+  componentDidMount() {
+    this.props.onDataFetched(this.state.currentPage)
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.state.currentPage !== prevState.currentPage) {
+      this.props.onDataFetched(this.state.currentPage)
+    }
   }
 
   render() {
+    const {results} = this.props.swapi_data
+    
     return (
-      <div className="App" onClick={e => {
-        console.log(this.props.swapi_data)
-      }}>
-        {/* <div className="Age-label">
-          your age: <span><strong>{this.props.age} </strong></span>
-          <em>({this.props.age > 18 ? "You're an adult!" : "You're not adult :c"})</em>
+      <div className="container">
+        <table>
+          <tbody>
+            <tr>
+              <th>Name</th>
+              <th>Gender</th>
+              <th>Height (cm)</th>
+              <th>Weight (kg)</th>
+              <th>Hair Color</th>
+              <th>Eye Color</th>
+            </tr>
+            {results && results.map((person, index) => {
+              return(
+              <tr key={index}>
+                <td key={1}>{person.name}</td>
+                <td key={2}>{person.gender}</td>
+                <td key={3}>{person.height}</td>
+                <td key={4}>{person.mass}</td>
+                <td key={5}>{person.hair_color}</td>
+                <td key={6}>{person.eye_color}</td>
+              </tr>
+              )
+            })}
+          </tbody>
+        </table>
+        <div className="currentPage">
+          {this.state.currentPage}
         </div>
-        <button onClick={this.props.onBecomeAdult}>Become adult!</button>
-        <button onClick={this.props.onLoggedIn}>Log in!</button>
-        <h2>{this.props.logged ? "You're adult and thus logged in!" : "You're not logged in"}</h2>
-        <span style={{color: "red"}}>{this.props.error ? this.props.error : null}</span> */}
-        <p>
-          asdasd
-        </p>
+        <div className="controls">
+          <button onClick={() => this.setState({currentPage: this.state.currentPage - 1})}>Prev</button>
+          <button onClick={() => this.setState({currentPage: this.state.currentPage + 1})}>Next</button>
+        </div>
       </div>
     );
   }
@@ -37,7 +70,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onDataFetched: () => dispatch(actionCreator.onDataFetched()),
+    onDataFetched: (currentPage) => dispatch(actionCreator.onDataFetched(currentPage)),
   };
 };
 export default connect(
