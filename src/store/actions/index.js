@@ -5,7 +5,13 @@ export const onDataFetched = (currentPage = 1) => (
             type: 'FETCH_DATA',
             payload: data
         }
-        console.log('fetched')
+        // console.log('fetched')
         dispatch(dataToReturn)
+    }
+)
+
+export const onChangePage = ([operation, number]) => (
+    dispatch => {
+        dispatch({type: 'CHANGE_PAGE', payload: [operation, number]})
     }
 )
